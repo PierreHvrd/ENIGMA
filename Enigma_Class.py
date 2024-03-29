@@ -24,7 +24,7 @@ class Enigma:
         plain_text.strip()
         for letter in plain_text:
             if 65 <= ord(letter) <= 90 or 97 <= ord(letter) <= 122:
-                text_cleaned += letter
+                text_cleaned += letter.upper()
 
         # then we actually encrypt the text
         text_encrypted = ""
@@ -42,7 +42,7 @@ class Enigma:
 
             # Encryption: Plugboard -> 3 -> 2 -> 1 -> Reflector -> 1 -> 2 -> 3 -> Plugboard
             text_encrypted += self.rotor_3.encrypt(self.rotor_2.encrypt(self.rotor_1.encrypt(
-                self.reflector.reflection(
+                self.reflector.encrypt(
                     self.rotor_1.encrypt(self.rotor_2.encrypt(self.rotor_3.encrypt(letter)))))))
 
         return text_encrypted

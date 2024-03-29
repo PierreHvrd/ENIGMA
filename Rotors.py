@@ -17,14 +17,48 @@ class Rotor(ABC):
 
     def rotate(self):
         self.ring.append(self.ring.pop(0))
+        self.position = chr(ord(self.position) + 1)
+        if ord(self.position) > 90:
+            self.position = "A"
+
+    def set_in_position(self, initial_position):
+        for i in range(ord(initial_position) - 65):
+            self.ring.append(self.ring.pop(0))
 
     def encrypt(self, letter):
-        letter = chr(65 - ord(self.ring_setting) + ord(letter))  # not sure (mod 26)
-        encryption = self.ring[ord(letter) - 65]
-        return encryption
+        """
+        Everything is this function is done with number (ascii codes of the letters) because it is
+        simpler for the calculations
+        """
+        # first we apply the ring setting
+        encryption = ord(letter) - ord(self.ring_setting) + 65
+
+        if encryption < 65:
+            encryption += 26
+
+        """
+        # then we apply the position of the rotor
+        encryption = encryption + ord(self.position) - 65
+        """
+        if encryption > 90:
+            encryption -= 26
+
+        encryption = ord(self.ring[encryption - 65])
+
+        # finally we apply the ring setting again but reversed
+        encryption = encryption + ord(self.ring_setting) - 65
+
+        if encryption > 90:
+            encryption -= 26  # in the case we look back ex: A -> Z (with ring setting "B")
+
+        encryption = encryption - ord(self.position) + 65
+        if encryption < 65:
+            encryption += 26  # in the case we look back ex: A -> Z (with ring setting "B")
+
+        return chr(encryption)
 
     def print_state(self, rotor_number):
-        print(f"State of the Rotor {rotor_number}:\nPosition:{self.position}\nRing: {self.ring}")
+        print(f"State of the Rotor {rotor_number}:\nPosition: {self.position}\nRing: {self.ring}")
 
 
 class RotorI(Rotor):
@@ -34,8 +68,7 @@ class RotorI(Rotor):
                      "S", "P", "A", "I", "B", "R", "C", "J"]
 
         # put the encryption in the correct position
-        for i in range(ord(self.position) - 65):
-            self.rotate()
+        self.set_in_position(initial_position)
 
         self.notch = chr(ord("Q") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
@@ -48,8 +81,7 @@ class RotorII(Rotor):
                      "P", "Y", "F", "V", "O", "E"]
 
         # put the encryption in the correct position
-        for i in range(ord(self.position) - 65):
-            self.rotate()
+        self.set_in_position(initial_position)
 
         self.notch = chr(ord("E") + ord(self.ring_setting) - 65)
 
@@ -61,8 +93,7 @@ class RotorIII(Rotor):
                      "K", "M", "U", "S", "Q", "O"]
 
         # put the encryption in the correct position
-        for i in range(ord(self.position) - 65):
-            self.rotate()
+        self.set_in_position(initial_position)
 
         self.notch = chr(ord("V") + ord(self.ring_setting) - 65)
 
@@ -74,8 +105,7 @@ class RotorIV(Rotor):
                      "K", "D", "C", "M", "W", "B"]
 
         # put the encryption in the correct position
-        for i in range(ord(self.position) - 65):
-            self.rotate()
+        self.set_in_position(initial_position)
 
         self.notch = chr(ord("J") + ord(self.ring_setting) - 65)
 
@@ -87,8 +117,7 @@ class RotorV(Rotor):
                      "Q", "O", "F", "E", "C", "K"]
 
         # put the encryption in the correct position
-        for i in range(ord(self.position) - 65):
-            self.rotate()
+        self.set_in_position(initial_position)
 
         self.notch = chr(ord("Z") + ord(self.ring_setting) - 65)
 
