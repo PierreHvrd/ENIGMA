@@ -8,7 +8,7 @@ class Reflector(ABC):
         self.reflection = {}
         self.type = ""
 
-    def encrypt(self, letter):
+    def cypher(self, letter):
         for key, value in self.reflection.items():
             if letter == key:
                 return value

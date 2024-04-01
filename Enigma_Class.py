@@ -18,7 +18,7 @@ class Enigma:
         self.rotor_3.print_state(3)
         self.reflector.print_type()
 
-    def encrypt(self, plain_text):
+    def cypher(self, plain_text):
         # first we have to remove the spaces and remove all the letters that are not from a to z and A to Z
         text_cleaned = ""
         plain_text.strip()
@@ -27,25 +27,47 @@ class Enigma:
                 text_cleaned += letter.upper()
 
         # then we actually encrypt the text
-        text_encrypted = ""
+        text_cyphered = ""
+        text_length = 0
         for letter in text_cleaned:
             # the rotors always rotate before the letter is encrypted and the third rotors rotate each time a letter
             # is encrypted
 
-            # careful double step not counted
+            # first we rotate the rotors
             self.rotor_3.rotate()
-            if self.rotor_3.ring == self.rotor_2.notch:
-                if self.rotor_2.ring == self.rotor_1.notch:
-                    self.rotor_1.rotate()
+            if self.rotor_3.position == self.rotor_3.notch:
+
+                # double stepping
+                if self.rotor_2.position == self.rotor_2.notch:
+                    self.rotor_2.rotate()
 
                 self.rotor_2.rotate()
+                if self.rotor_2.position == self.rotor_2.notch:
+                    self.rotor_1.rotate()
 
             # Encryption: Plugboard -> 3 -> 2 -> 1 -> Reflector -> 1 -> 2 -> 3 -> Plugboard
-            text_encrypted += self.rotor_3.encrypt(self.rotor_2.encrypt(self.rotor_1.encrypt(
-                self.reflector.encrypt(
-                    self.rotor_1.encrypt(self.rotor_2.encrypt(self.rotor_3.encrypt(letter)))))))
 
-        return text_encrypted
+            # forward pass
+            rotor3_cypher = self.rotor_3.cypher(letter)
+            rotor2_cypher = self.rotor_2.cypher(rotor3_cypher)
+            rotor1_cypher = self.rotor_1.cypher(rotor2_cypher)
+
+            # reflection
+            reflector_cypher = self.reflector.cypher(rotor1_cypher)
+            rotor1_cypher_back = self.rotor_1.cypher_back(reflector_cypher)
+            rotor2_cypher_back = self.rotor_2.cypher_back(rotor1_cypher_back)
+            rotor3_cypher_back = self.rotor_3.cypher_back(rotor2_cypher_back)
+            """text_cyphered += self.rotor_3.cypher(self.rotor_2.cypher(self.rotor_1.cypher(
+                self.reflector.cypher(
+                    self.rotor_1.cypher(self.rotor_2.cypher(self.rotor_3.cypher(letter)))))))
+            """
+            text_cyphered += rotor3_cypher_back
+            # we add spaces every 5 character to make it more readable
+            text_length += 1
+            if text_length % 5 == 0 and text_length != 0:
+                text_cyphered += " "
+
+        return text_cyphered
 
 
 
