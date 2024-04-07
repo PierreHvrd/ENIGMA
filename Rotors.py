@@ -14,6 +14,8 @@ class Rotor(ABC):
         self.ring_setting = ring_setting
         self.ring = {}
         self.notch = ""  # when this letter is reached the next rotor has to rotate
+        self.double_stepping = ""  # when this position is reached BY THE MIDDLE ROTOR it rotates again and make the
+        # next rotate this position is always the position before the notch position.
 
     def rotate(self):
         self.position = chr(ord(self.position) + 1)
@@ -34,10 +36,7 @@ class Rotor(ABC):
         """
 
         # first we apply the position of the rotor
-        encryption = ord(letter) + ord(self.position) - 65
-
-        if encryption > 90:
-            encryption -= 26
+        encryption = self.cesar_cypher(letter, True)
 
         for key in self.ring.keys():
             if key == chr(encryption):
@@ -53,9 +52,7 @@ class Rotor(ABC):
         """
 
         # finally we apply the position of the rotor to the output
-        encryption = encryption - ord(self.position) + 65
-        if encryption < 65:
-            encryption += 26  # in the case we look back ex: A -> Z (with ring setting "B")
+        encryption = self.cesar_cypher(chr(encryption), False)
 
         return chr(encryption)
 
@@ -74,10 +71,7 @@ class Rotor(ABC):
         """
 
         # first we apply the position of the rotor
-        encryption = ord(letter) + ord(self.position) - 65
-
-        if encryption > 90:
-            encryption -= 26
+        encryption = self.cesar_cypher(letter, True)
 
         for key, value in self.ring.items():
             if value == chr(encryption):
@@ -93,11 +87,24 @@ class Rotor(ABC):
         """
 
         # finally we apply the position of the rotor to the output
-        encryption = encryption - ord(self.position) + 65
-        if encryption < 65:
-            encryption += 26  # in the case we look back ex: A -> Z (with ring setting "B")
+        # first we apply the position of the rotor
+        encryption = self.cesar_cypher(chr(encryption), False)
 
         return chr(encryption)
+
+    def cesar_cypher(self, letter, plus):
+        """
+        Useful to apply the position of the rotor.
+        :param letter:
+        :param plus: a boolean that tells if the cypher is positive (A -> B, B-> C) or negative (B-> A, C-> B)
+        :return:
+        """
+        if plus:
+            cypher = (ord(letter) - 65 + ord(self.position) - 65) % 26
+            return cypher + 65
+        else:
+            cypher = (ord(letter) - 65 - (ord(self.position) - 65)) % 26
+            return cypher + 65
 
     def print_state(self, rotor_number):
         print(f"State of the Rotor {rotor_number}:\nPosition: {self.position}\nRing: {self.ring}")
@@ -111,6 +118,7 @@ class RotorI(Rotor):
                      "S": "S", "T": "P", "U": "A", "V": "I", "W": "B", "X": "R", "Y": "C", "Z": "J"}
 
         self.notch = "R"
+        self.double_stepping = "Q"
         """
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
@@ -125,6 +133,7 @@ class RotorII(Rotor):
                      "S": "Z", "T": "N", "U": "P", "V": "Y", "W": "F", "X": "V", "Y": "O", "Z": "E"}
 
         self.notch = "F"
+        self.double_stepping = "E"
         """
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
@@ -139,6 +148,8 @@ class RotorIII(Rotor):
                      "S": "G", "T": "A", "U": "K", "V": "M", "W": "U", "X": "S", "Y": "Q", "Z": "O"}
 
         self.notch = "W"
+        self.double_stepping = "V"
+
         """
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
@@ -153,6 +164,7 @@ class RotorIV(Rotor):
                      "U": "K", "V": "D", "W": "C", "X": "M", "Y": "W", "Z": "B"}
 
         self.notch = "K"
+        self.double_stepping = "J"
         """
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
@@ -167,6 +179,7 @@ class RotorV(Rotor):
                      "U": "Q", "V": "O", "W": "F", "X": "E", "Y": "C", "Z": "K"}
 
         self.notch = "A"
+        self.double_stepping = "Z"
         """
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting

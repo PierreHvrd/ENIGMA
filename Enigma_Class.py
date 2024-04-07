@@ -35,15 +35,18 @@ class Enigma:
 
             # first we rotate the rotors
             self.rotor_3.rotate()
+
             if self.rotor_3.position == self.rotor_3.notch:
-
-                # double stepping
-                if self.rotor_2.position == self.rotor_2.notch:
-                    self.rotor_2.rotate()
-
                 self.rotor_2.rotate()
                 if self.rotor_2.position == self.rotor_2.notch:
                     self.rotor_1.rotate()
+
+            # double stepping
+            if self.rotor_2.position == self.rotor_2.double_stepping and self.rotor_3.position != self.rotor_3.notch:
+                # the second condition is important because it is important that the middle rotor does not rotate
+                # two times with just one keystroke on the keyboard
+                self.rotor_2.rotate()
+                self.rotor_1.rotate()
 
             # Encryption: Plugboard -> 3 -> 2 -> 1 -> Reflector -> 1 -> 2 -> 3 -> Plugboard
 
