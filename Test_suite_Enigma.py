@@ -5,9 +5,9 @@ from Reflectors import *
 from Rotors import *
 from random import randint
 
-rotor_1 = RotorIV("Q", "A")
-rotor_2 = RotorII("E", "A")
-rotor_3 = RotorI("K", "A")
+rotor_1 = RotorIII("N", "A")
+rotor_2 = RotorI("K", "A")
+rotor_3 = RotorV("M", "A")
 reflector = ReflectorC()
 
 """
@@ -29,10 +29,10 @@ for i in range(7):
 assert text == "AIBHODL"
 """
 
-enigma = Enigma(rotor_1, rotor_2, rotor_3, reflector, "")
-text_cyphered = enigma.cypher("TZRBB RTCYJ AFGFW YWPNU SYVEZ KZAYQ VDZGJ PVPGY TLYQO GYIZM XPXUV IBKCC ")
-print(text_cyphered)
-assert text_cyphered == "ISUHS BHGEN TGSWS PSLFZ ZXYJK EHZWY SSYEY FANPK VWRTB IGVRU GDGFN TQRAR "
+enigma = Enigma(rotor_1, rotor_2, rotor_3, reflector, "pl rn fv dq mz uy se ka jo hi")
+text_encrypted = enigma.cypher("OSKQH SHAWU SOAMA GVBIW OWBOM ENCBN HHEUE WQQBW VGSTN CABBW MOARS CLQPH V")
+print(text_encrypted)
+assert text_encrypted == "XGSZI FCOUB QSBBE BHOHZ DLMUN SZJEY SMNMA LORDI LKAMV EENFQ BYNQP IDZRX A"
 
 def generate_test():
 

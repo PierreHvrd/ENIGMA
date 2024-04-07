@@ -184,4 +184,3 @@ class RotorV(Rotor):
         self.notch = chr(ord("R") + ord(self.ring_setting) - 65)  # we set the notch (Q for this rotor)
         # and adjust it with the ring setting
         """
-
