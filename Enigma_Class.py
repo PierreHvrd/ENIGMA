@@ -15,6 +15,13 @@ class Enigma:
         self.build_plugboard(plugboard_state)
 
     def build_plugboard(self, plugboard_state):
+        """
+        This functions converts a string like this 'AB CD ' into a dictionary like this: {'A':'B', 'C':'D'}.
+        The letters can be uppercase or lowercase. And there can be multiple spaces between the letter (not only one).
+        However, if there are no spaces between the letters or non-ascii characters the method won't work
+        :param plugboard_state: A string like this 'Ab Cd   ef' should only contain upper or lowercase letters and
+        spaces
+        """
         # first we remove the double (or more) spaces
         pre_treatment = ""
         plugboard_state_length = len(plugboard_state)
@@ -70,14 +77,15 @@ class Enigma:
             # the format is wrong: display something
             print("The format of the string is incorrect")
 
-    def print_state(self):
-        print(f"Plugboard state: {self.plugboard}")
-        self.rotor_1.print_state(1)
-        self.rotor_2.print_state(2)
-        self.rotor_3.print_state(3)
-        self.reflector.print_type()
-
     def cypher(self, plain_text):
+        """
+        This method return the letter cyphered after the whole encryption process. The encryption process contains the
+         plugboard, the three rotors and the reflector
+        :param plain_text: A string, it can contain non-ascii characters, but they will be ignored. The spaces are also
+        ignored
+        :return: text_cyphered : A string that contains only upper letters and spaces. Every 5 characters there is a
+        space to make the string more readable.
+        """
         # first we have to remove the spaces and remove all the letters that are not from a to z and A to Z
         text_cleaned = ""
         plain_text.strip()
@@ -121,10 +129,7 @@ class Enigma:
             rotor2_cypher_back = self.rotor_2.cypher_back(rotor1_cypher_back)
             rotor3_cypher_back = self.rotor_3.cypher_back(rotor2_cypher_back)
             plugboard_backward_cypher = self.plugboard_cypher(rotor3_cypher_back)
-            """text_cyphered += self.rotor_3.cypher(self.rotor_2.cypher(self.rotor_1.cypher(
-                self.reflector.cypher(
-                    self.rotor_1.cypher(self.rotor_2.cypher(self.rotor_3.cypher(letter)))))))
-            """
+
             text_cyphered += plugboard_backward_cypher
             # we add spaces every 5 character to make it more readable
             text_length += 1
@@ -134,6 +139,12 @@ class Enigma:
         return text_cyphered
 
     def plugboard_cypher(self, letter):
+        """
+        This functions returns the letter passed in parameters or, if the letter passed in parameters is plugged to
+        another then it return the other letter
+        :param letter: string of length 1
+        :return: letter: string of length 1
+        """
         for key, value in self.plugboard.items():
             if letter == key:
                 return value
