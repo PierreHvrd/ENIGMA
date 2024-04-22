@@ -1,8 +1,20 @@
 # this file contains the code for the enigma class
-from Rotors import Rotor
-from Reflectors import Reflector
+from Rotor_abstract import Rotor
+from Reflector_abstract import Reflector
 
 
+def singleton(cls):
+    instances = {}
+
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return get_instance
+
+
+@singleton
 class Enigma:
     def __init__(self, rotor_1: Rotor, rotor_2: Rotor, rotor_3: Rotor, reflector: Reflector, plugboard_state):
         self.rotor_1 = rotor_1
@@ -87,11 +99,7 @@ class Enigma:
         space to make the string more readable.
         """
         # first we have to remove the spaces and remove all the letters that are not from a to z and A to Z
-        text_cleaned = ""
-        plain_text.strip()
-        for letter in plain_text:
-            if 65 <= ord(letter) <= 90 or 97 <= ord(letter) <= 122:
-                text_cleaned += letter.upper()
+        text_cleaned = self.clean_text(plain_text)
 
         # then we actually encrypt the text
         text_cyphered = ""
@@ -137,6 +145,20 @@ class Enigma:
                 text_cyphered += " "
 
         return text_cyphered
+
+    def clean_text(self, plain_text):
+        """
+        This method just selects the upper and lower letters in the text and turn the lower letters into upper letters
+        :param plain_text: str
+        :return: text_cleaned text that contains only upper letters and spaces
+        """
+        text_cleaned = ""
+        plain_text.strip()
+        for letter in plain_text:
+            if 65 <= ord(letter) <= 90 or 97 <= ord(letter) <= 122:
+                text_cleaned += letter.upper()
+
+        return text_cleaned
 
     def plugboard_cypher(self, letter):
         """
