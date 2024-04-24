@@ -3,18 +3,6 @@ from Rotor_abstract import Rotor
 from Reflector_abstract import Reflector
 
 
-def singleton(cls):
-    instances = {}
-
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return get_instance
-
-
-@singleton
 class Enigma:
     def __init__(self, rotor_1: Rotor, rotor_2: Rotor, rotor_3: Rotor, reflector: Reflector, plugboard_state):
         self.rotor_1 = rotor_1

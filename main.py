@@ -2,11 +2,29 @@
 import random
 import tkinter as tk
 from tkinter import ttk
+from Enigma_Class import Enigma
+from RotorI import RotorI
+from RotorII import RotorII
+from RotorIII import RotorIII
+from RotorIV import RotorIV
+from RotorV import RotorV
+from ReflectorB import ReflectorB
+from ReflectorC import ReflectorC
+from tkinter import END
 
 root = tk.Tk()
 
+# constants for the code
+
+# dict to instantiate the rotors and the reflectors
+DICT_TO_INSTANTIATE = {"RotorI": RotorI, "RotorII": RotorII, "RotorIII": RotorIII, "RotorIV": RotorIV, "RotorV": RotorV,
+                       "ReflectorB": ReflectorB, "ReflectorC": ReflectorC}
+
+enigma = []  # for now equals later on it will be the enigma machine
+
+
 # Constants for the window
-root_title = "ENIGMA M3 simulator"
+ROOT_TITLE = "ENIGMA M3 simulator"
 WIDTH = 800
 HIGH = 500
 ICON = tk.PhotoImage(file="icon.png")
@@ -21,7 +39,7 @@ LINE_7 = 370  # Line for the cypher button
 
 # use the constants for the window
 root.geometry(f"{WIDTH}x{HIGH}")
-root.title(root_title)
+root.title(ROOT_TITLE)
 root.resizable(False, False)  # to make the window not resizable
 root.iconphoto(True, ICON)
 
@@ -110,16 +128,45 @@ def randomize():
 
         couples += " "
 
-    plugboard_entry.delete(0, "end")
+    plugboard_entry.delete(0, END)
     plugboard_entry.insert(0, couples)
 
+
+def cypher():
+
+    if len(enigma) > 0:  # if there is an instance, we delete it
+        del enigma[0]
+
+    enigma.append(instantiate())  # we create an instance of the enigma machine and add it to the list
+
+    text_to_cypher = plain_text_entry.get(1.0, END)
+    cypher_text_entry.config(state="normal")
+    cypher_text_entry.delete(1.0, END)
+    cypher_text_entry.insert(1.0, enigma[0].cypher(text_to_cypher))  # enigma[0].cypher(text_to_cypher))
+    cypher_text_entry.config(state="disabled")
+
+
+def instantiate():
+    rotor_1_name = f"Rotor{rotor_1_type.get()}"
+    rotor_2_name = f"Rotor{rotor_2_type.get()}"
+    rotor_3_name = f"Rotor{rotor_3_type.get()}"
+    reflector_name = f"Reflector{reflector_type.get()}"
+
+    rotor_1 = DICT_TO_INSTANTIATE[rotor_1_name](rotor_1_position_dropdown.get())
+    rotor_2 = DICT_TO_INSTANTIATE[rotor_2_name](rotor_2_position_dropdown.get())
+    rotor_3 = DICT_TO_INSTANTIATE[rotor_3_name](rotor_3_position_dropdown.get())
+    reflector = DICT_TO_INSTANTIATE[reflector_name]()
+
+    enigma_machine = Enigma(rotor_1, rotor_2, rotor_3, reflector, plugboard_entry.get())
+
+    return enigma_machine
 
 
 # Buttons
 randomize_button = tk.Button(root, text="Randomize", command=randomize)
 save_button = tk.Button(root, text="Save")
 load_button = tk.Button(root, text="Load")
-cypher_button = tk.Button(root, text="Cypher")
+cypher_button = tk.Button(root, text="Cypher", command=cypher)
 
 
 # place all the elements
@@ -151,7 +198,6 @@ cypher_button.place(x=385, y=LINE_7)
 
 plain_text_label.place(x=100, y=LINE_5)
 plain_text_entry.place(x=100, y=LINE_6)
-
 
 cypher_text_label.place(x=475, y=LINE_5)
 cypher_text_entry.place(x=475, y=LINE_6)
