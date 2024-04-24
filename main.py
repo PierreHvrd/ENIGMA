@@ -1,5 +1,5 @@
 # this is the main file that launches the graphic interface
-
+import random
 import tkinter as tk
 from tkinter import ttk
 
@@ -54,8 +54,6 @@ rotor_1_type = tk.StringVar()
 rotor_1_type.set(rotors_options[0])
 rotor_1_type_dropdown = tk.OptionMenu(root, rotor_1_type, *rotors_options)
 
-rotor_1_position = tk.StringVar()
-rotor_1_position.set(position_options[0])
 rotor_1_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
 rotor_1_position_dropdown.current(0)
 
@@ -64,8 +62,6 @@ rotor_2_type = tk.StringVar()
 rotor_2_type.set(rotors_options[0])
 rotor_2_dropdown = tk.OptionMenu(root, rotor_2_type, *rotors_options)
 
-rotor_2_position = tk.StringVar()
-rotor_2_position.set(position_options[0])
 rotor_2_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
 rotor_2_position_dropdown.current(0)
 
@@ -74,8 +70,6 @@ rotor_3_type = tk.StringVar()
 rotor_3_type.set(rotors_options[0])
 rotor_3_dropdown = tk.OptionMenu(root, rotor_3_type, *rotors_options)
 
-rotor_3_position = tk.StringVar()
-rotor_3_position.set(position_options[0])
 rotor_3_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
 rotor_3_position_dropdown.current(0)
 
@@ -84,9 +78,45 @@ plugboard_entry = tk.Entry(root, width=40)
 plain_text_entry = tk.Text(root, width=30, height=10)
 cypher_text_entry = tk.Text(root, width=30, height=10, state="disabled")
 
+# commands
+
+
+def randomize():
+    # randomize the rotors sets
+    rotor_1_type.set(rotors_options[random.randint(0, len(rotors_options) - 1)])
+    rotor_2_type.set(rotors_options[random.randint(0, len(rotors_options) - 1)])
+    rotor_3_type.set(rotors_options[random.randint(0, len(rotors_options) - 1)])
+
+    # randomize positions
+    rotor_1_position_dropdown.current(random.randint(0, len(position_options) - 1))
+    rotor_2_position_dropdown.current(random.randint(0, len(position_options) - 1))
+    rotor_3_position_dropdown.current(random.randint(0, len(position_options) - 1))
+
+    # randomize the reflector type
+    reflector_type.set(chr(random.randint(66, 67)))
+
+    # randomize the plugboard
+    alphabet = [chr(i) for i in range(65, 91)]
+    nb_of_couples = random.randint(0, 13)
+    couples = ""
+    for j in range(nb_of_couples):
+        first_letter_of_couple = random.randint(0, len(alphabet) - 1)
+        couples += alphabet[first_letter_of_couple]
+        alphabet.pop(first_letter_of_couple)
+
+        second_letter_of_the_couple = random.randint(0, len(alphabet) - 1)
+        couples += alphabet[second_letter_of_the_couple]
+        alphabet.pop(second_letter_of_the_couple)
+
+        couples += " "
+
+    plugboard_entry.delete(0, "end")
+    plugboard_entry.insert(0, couples)
+
+
 
 # Buttons
-randomize_button = tk.Button(root, text="Randomize")
+randomize_button = tk.Button(root, text="Randomize", command=randomize)
 save_button = tk.Button(root, text="Save")
 load_button = tk.Button(root, text="Load")
 cypher_button = tk.Button(root, text="Cypher")
@@ -128,4 +158,3 @@ cypher_text_entry.place(x=475, y=LINE_6)
 
 # finally, we launch the mainloop
 root.mainloop()
-
