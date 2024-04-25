@@ -11,6 +11,9 @@ from RotorV import RotorV
 from ReflectorB import ReflectorB
 from ReflectorC import ReflectorC
 from tkinter import END
+import pickle
+from tkinter import filedialog
+
 
 root = tk.Tk()
 
@@ -54,6 +57,7 @@ rotor_3_position_label = tk.Label(root, text="Position: ")
 plugboard_label = tk.Label(root, text="Plugboard: ")
 plain_text_label = tk.Label(root, text="Plain text: ")
 cypher_text_label = tk.Label(root, text="Cypher text: ")
+incorrect_plugboard = tk.Label(root, text="Incorrect plugboard, use format: 'AB CD EF'", fg="red")
 
 # Drop down boxes
 
@@ -72,29 +76,30 @@ rotor_1_type = tk.StringVar()
 rotor_1_type.set(rotors_options[0])
 rotor_1_type_dropdown = tk.OptionMenu(root, rotor_1_type, *rotors_options)
 
-rotor_1_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
+rotor_1_position_dropdown = ttk.Combobox(root, values=position_options, width=4, state="readonly")
 rotor_1_position_dropdown.current(0)
 
 # Rotor 2
 rotor_2_type = tk.StringVar()
 rotor_2_type.set(rotors_options[0])
-rotor_2_dropdown = tk.OptionMenu(root, rotor_2_type, *rotors_options)
+rotor_2_type_dropdown = tk.OptionMenu(root, rotor_2_type, *rotors_options)
 
-rotor_2_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
+rotor_2_position_dropdown = ttk.Combobox(root, values=position_options, width=4, state="readonly")
 rotor_2_position_dropdown.current(0)
 
 # Rotor 3
 rotor_3_type = tk.StringVar()
 rotor_3_type.set(rotors_options[0])
-rotor_3_dropdown = tk.OptionMenu(root, rotor_3_type, *rotors_options)
+rotor_3_type_dropdown = tk.OptionMenu(root, rotor_3_type, *rotors_options)
 
-rotor_3_position_dropdown = ttk.Combobox(root, values=position_options, width=4)
+rotor_3_position_dropdown = ttk.Combobox(root, values=position_options, width=4, state="readonly")
 rotor_3_position_dropdown.current(0)
 
 # Entries and text boxes
 plugboard_entry = tk.Entry(root, width=40)
 plain_text_entry = tk.Text(root, width=30, height=10)
 cypher_text_entry = tk.Text(root, width=30, height=10, state="disabled")
+
 
 # commands
 
@@ -130,14 +135,12 @@ def randomize():
 
     plugboard_entry.delete(0, END)
     plugboard_entry.insert(0, couples)
+    incorrect_plugboard.place_forget()  # we hide the eventual error message
 
 
 def cypher():
 
-    if len(enigma) > 0:  # if there is an instance, we delete it
-        del enigma[0]
-
-    enigma.append(instantiate())  # we create an instance of the enigma machine and add it to the list
+    destroy_and_instantiate()
 
     text_to_cypher = plain_text_entry.get(1.0, END)
     cypher_text_entry.config(state="normal")
@@ -162,10 +165,74 @@ def instantiate():
     return enigma_machine
 
 
+def destroy_and_instantiate():
+    # we destroy the instance if there is one, then we instantiate (to make sure that the correct enigma machine is
+    # used meaning the correct settings)
+    if len(enigma) > 0:  # if there is an instance, we delete it
+        del enigma[0]
+
+    enigma.append(instantiate())  # we create an instance of the enigma machine and add it to the list
+
+    # if there is a problem in the plugboard
+    if not enigma[0].init_good:
+        incorrect_plugboard.place(x=270, y=170)
+    else:
+        incorrect_plugboard.place_forget()
+
+
+def build_string_from_plugboard(dict_plugboard):
+    result = ""
+    for key, value in dict_plugboard.items():
+        result += f"{key}{value} ".upper()
+
+    return result
+
+
+def load():
+    filename = filedialog.askopenfilename(initialdir="../", title="Open an enigma file",
+                                          filetypes=(("enigma file", "*.enigma"), ))
+
+    if filename != "":  # if the user as selected a file
+        with open(filename, "rb") as file_to_load:
+            my_unpickler = pickle.Unpickler(file_to_load)
+            enigma_loaded = my_unpickler.load()
+
+            # set the rotor types
+            rotor_1_type.set(enigma_loaded.rotor_1.type)
+            rotor_2_type.set(enigma_loaded.rotor_2.type)
+            rotor_3_type.set(enigma_loaded.rotor_3.type)
+
+            # set the rotor positions
+            rotor_1_position_dropdown.set(enigma_loaded.rotor_1.position)
+            rotor_2_position_dropdown.set(enigma_loaded.rotor_2.position)
+            rotor_3_position_dropdown.set(enigma_loaded.rotor_3.position)
+
+            # set the reflector type
+            reflector_type.set(enigma_loaded.reflector.type)
+
+            # set the plugboard
+            plugboard_entry.delete(0, END)
+            plugboard_entry.insert(0, build_string_from_plugboard(enigma_loaded.plugboard))
+            incorrect_plugboard.place_forget()  # we hide the eventual error message
+
+
+def save():
+    destroy_and_instantiate()
+    file_to_save = filedialog.asksaveasfile(initialdir="../", mode='wb', defaultextension=".enigma",
+                                            filetypes=(("enigma file", "*.enigma"),))
+
+    if file_to_save is not None:
+
+        my_pickler = pickle.Pickler(file_to_save)
+        my_pickler.dump(enigma[0])
+
+    file_to_save.close()
+
+
 # Buttons
 randomize_button = tk.Button(root, text="Randomize", command=randomize)
-save_button = tk.Button(root, text="Save")
-load_button = tk.Button(root, text="Load")
+save_button = tk.Button(root, text="Save", command=save)
+load_button = tk.Button(root, text="Load", command=load)
 cypher_button = tk.Button(root, text="Cypher", command=cypher)
 
 
@@ -179,12 +246,12 @@ rotor_1_position_label.place(x=250, y=LINE_1_and_half)
 rotor_1_position_dropdown.place(x=305, y=LINE_1_and_half)
 
 rotor_2_type_label.place(x=400, y=LINE_1)
-rotor_2_dropdown.place(x=450, y=LINE_1)
+rotor_2_type_dropdown.place(x=450, y=LINE_1)
 rotor_2_position_label.place(x=400, y=LINE_1_and_half)
 rotor_2_position_dropdown.place(x=455, y=LINE_1_and_half)
 
 rotor_3_type_label.place(x=550, y=LINE_1)
-rotor_3_dropdown.place(x=600, y=LINE_1)
+rotor_3_type_dropdown.place(x=600, y=LINE_1)
 rotor_3_position_label.place(x=550, y=LINE_1_and_half)
 rotor_3_position_dropdown.place(x=605, y=LINE_1_and_half)
 

@@ -11,3 +11,4 @@ class RotorIV(Rotor):
 
         self.notch = "K"
         self.double_stepping = "J"
+        self.type = "IV"

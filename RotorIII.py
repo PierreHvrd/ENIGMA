@@ -11,3 +11,4 @@ class RotorIII(Rotor):
 
         self.notch = "W"
         self.double_stepping = "V"
+        self.type = "III"

@@ -15,6 +15,7 @@ class Rotor(ABC):
         self.notch = ""  # when this letter is reached the next rotor has to rotate
         self.double_stepping = ""  # when this position is reached BY THE MIDDLE ROTOR it rotates again and make the
         # next rotate this position is always the position before the notch position.
+        self.type = ""  # for the load in the graphical interface
 
     def rotate(self):
         """

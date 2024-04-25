@@ -90,45 +90,12 @@ print(singleton_instance_1 is singleton_instance_2)
 """
 
 
-# 1) delete properly the singleton -> create a very simple simulation of enigma machine
-# 2) check that Combobox always give something in the list of values
-# 3) create a destroy-and-instantiate function
-# 4) file system (first the save button and then the load button)
-
-class SimpleRotor:
-    def __init__(self, position):
-        self.position = position
-
-
-def singleton(cls):
-    instances = {}
-
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return get_instance
+# 1) delete properly the singleton -> create a very simple simulation of enigma machine DONE
+# 2) check that Combobox always give something in the list of values. DONE
+# 3) create a destroy-and-instantiate function. DONE
+# 4) handle plugboard incorrect entry. DONE
+# 5) file system (first the save button and then the load button)
+# 6) 2 design patters
+# 7) Unitest
 
 
-@singleton
-class SimpleEnigma:
-    def __init__(self, simple_rotor_1, simple_rotor_2):
-        self.simple_rotor_1 = simple_rotor_1
-        self.simple_rotor_2 = simple_rotor_2
-
-
-my_simple_rotor = SimpleRotor("S")
-my_simple_rotor2 = SimpleRotor("L")
-my_simple_enigma = SimpleEnigma(my_simple_rotor, my_simple_rotor2)
-
-del my_simple_enigma
-del my_simple_rotor
-del my_simple_rotor2
-
-my_simple_rotor = SimpleRotor("P")
-my_simple_rotor2 = SimpleRotor("B")
-my_simple_enigma = SimpleEnigma(my_simple_rotor, my_simple_rotor2)
-
-print("Rotor 1 position: ", my_simple_enigma.simple_rotor_1.position)
-print("Rotor 1 position: ", my_simple_enigma.simple_rotor_2.position)

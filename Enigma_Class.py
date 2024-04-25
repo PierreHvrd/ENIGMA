@@ -12,7 +12,7 @@ class Enigma:
         self.plugboard = {}
 
         # then we create the dict representing the plugboard state
-        self.build_plugboard(plugboard_state)
+        self.init_good = self.build_plugboard(plugboard_state)
 
     def build_plugboard(self, plugboard_state):
         """
@@ -21,6 +21,7 @@ class Enigma:
         However, if there are no spaces between the letters or non-ascii characters the method won't work
         :param plugboard_state: A string like this 'Ab Cd   ef' should only contain upper or lowercase letters and
         spaces
+        :returns: A boolean, true if everything went good, false otherwise
         """
         # first we remove the double (or more) spaces
         pre_treatment = ""
@@ -64,6 +65,9 @@ class Enigma:
                         if previous_char in pair or plugboard_state[i] in pair:
                             correct_format = False  # one letter can only be swapped with another, not two others
 
+                    if previous_char == plugboard_state[i]:
+                        correct_format = False
+
                     if correct_format:
                         dict_plugboard[previous_char] = plugboard_state[i]
 
@@ -72,10 +76,11 @@ class Enigma:
             i += 1
         if correct_format:
             self.plugboard = dict_plugboard
+            return True
 
         else:
             # the format is wrong: display something
-            print("The format of the string is incorrect")
+            return False
 
     def cypher(self, plain_text):
         """
