@@ -3,7 +3,7 @@ import random
 import tkinter as tk
 from tkinter import ttk, END, filedialog
 import pickle
-from EnigmaBuilder import EnigmaBuilder
+from Classes.EnigmaBuilder import EnigmaBuilder
 
 
 root = tk.Tk()
@@ -13,7 +13,7 @@ root = tk.Tk()
 enigma = []  # for now equals later on it will be the enigma machine
 
 
-# Constants for the window
+# Constants for the window3
 ROOT_TITLE = "ENIGMA M3 simulator"
 WIDTH = 800
 HIGH = 500
@@ -205,8 +205,7 @@ def save():
 
         my_pickler = pickle.Pickler(file_to_save)
         my_pickler.dump(enigma[0])
-
-    file_to_save.close()
+        file_to_save.close()
 
 
 # Buttons

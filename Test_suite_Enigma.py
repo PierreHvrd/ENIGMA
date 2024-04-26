@@ -1,13 +1,13 @@
 # this is the test suite for the ENIGMA project
 
 import unittest
-from EnigmaBuilder import EnigmaBuilder
-from RotorI import RotorI
-from RotorII import RotorII
-from RotorIII import RotorIII
-from RotorIV import RotorIV
-from RotorV import RotorV
-from ReflectorB import ReflectorB
+from Classes.EnigmaBuilder import EnigmaBuilder
+from Classes.Rotors.RotorI import RotorI
+from Classes.Rotors.RotorII import RotorII
+from Classes.Rotors.RotorIII import RotorIII
+from Classes.Rotors.RotorIV import RotorIV
+from Classes.Rotors.RotorV import RotorV
+from Classes.Reflectors.ReflectorB import ReflectorB
 
 
 class TestEnigma(unittest.TestCase):

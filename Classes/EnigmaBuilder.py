@@ -1,12 +1,13 @@
 # this file contains the code for the EnigmaBuilder
-from RotorI import RotorI
-from RotorII import RotorII
-from RotorIII import RotorIII
-from RotorIV import RotorIV
-from RotorV import RotorV
-from ReflectorB import ReflectorB
-from ReflectorC import ReflectorC
-from Enigma_Class import Enigma
+
+from .Rotors.RotorI import RotorI
+from .Rotors.RotorII import RotorII
+from .Rotors.RotorIII import RotorIII
+from .Rotors.RotorIV import RotorIV
+from .Rotors.RotorV import RotorV
+from .Reflectors.ReflectorB import ReflectorB
+from .Reflectors.ReflectorC import ReflectorC
+from .Enigma_Class import Enigma
 
 
 class EnigmaBuilder:

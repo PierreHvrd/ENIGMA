@@ -1,6 +1,4 @@
 # this file contains the code for the enigma class
-from Rotor_abstract import Rotor
-from Reflector_abstract import Reflector
 
 
 class Enigma:

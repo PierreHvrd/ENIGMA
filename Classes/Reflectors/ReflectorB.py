@@ -1,5 +1,5 @@
 # this file contains the code only for the reflectorB
-from Reflector_abstract import Reflector
+from .Reflector_abstract import Reflector
 
 
 class ReflectorB(Reflector):

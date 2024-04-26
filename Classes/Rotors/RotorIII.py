@@ -1,5 +1,5 @@
 # this file contains the code only for the rotor III
-from Rotor_abstract import Rotor
+from .Rotor_abstract import Rotor
 
 
 class RotorIII(Rotor):
