@@ -9,7 +9,7 @@ from RotorII import RotorII
 from RotorIII import RotorIII
 from RotorIV import RotorIV
 from RotorV import RotorV
-"""
+
 rotor_1 = RotorIII("N")
 rotor_2 = RotorI("K")
 rotor_3 = RotorV("M")
@@ -17,8 +17,10 @@ rotor_4 = RotorIV("O")
 rotor_5 = RotorV("Q")
 reflectorB = ReflectorB()  # strategy
 reflectorC = ReflectorC()
+enigma = Enigma(rotor_1, rotor_2, rotor_3, reflectorC, "")
 
 
+"""
 # just test that the rotor rotates correctly
 rotor_1_bis = RotorI("Z", "A")
 text = ""
@@ -36,7 +38,7 @@ for i in range(7):
 
 assert text == "AIBHODL"
 
-enigma = Enigma(rotor_1, rotor_2, rotor_3, reflectorC, "")
+
 enigma_2 = Enigma(rotor_5, rotor_3, rotor_1, "")
 print(enigma_2 == enigma)
 
@@ -97,5 +99,7 @@ print(singleton_instance_1 is singleton_instance_2)
 # 5) file system (first the save button and then the load button)
 # 6) 2 design patters
 # 7) Unitest
+
+
 
 

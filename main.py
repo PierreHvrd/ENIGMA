@@ -1,27 +1,14 @@
 # this is the main file that launches the graphic interface
 import random
 import tkinter as tk
-from tkinter import ttk
-from Enigma_Class import Enigma
-from RotorI import RotorI
-from RotorII import RotorII
-from RotorIII import RotorIII
-from RotorIV import RotorIV
-from RotorV import RotorV
-from ReflectorB import ReflectorB
-from ReflectorC import ReflectorC
-from tkinter import END
+from tkinter import ttk, END, filedialog
 import pickle
-from tkinter import filedialog
+from EnigmaBuilder import EnigmaBuilder
 
 
 root = tk.Tk()
 
 # constants for the code
-
-# dict to instantiate the rotors and the reflectors
-DICT_TO_INSTANTIATE = {"RotorI": RotorI, "RotorII": RotorII, "RotorIII": RotorIII, "RotorIV": RotorIV, "RotorV": RotorV,
-                       "ReflectorB": ReflectorB, "ReflectorC": ReflectorC}
 
 enigma = []  # for now equals later on it will be the enigma machine
 
@@ -30,7 +17,7 @@ enigma = []  # for now equals later on it will be the enigma machine
 ROOT_TITLE = "ENIGMA M3 simulator"
 WIDTH = 800
 HIGH = 500
-ICON = tk.PhotoImage(file="icon.png")
+ICON = tk.PhotoImage(file="images/icon.png")
 LINE_1 = 50  # first line of the application (where the reflector and the rotor selection is shown)
 LINE_1_and_half = 85  # line where there are the position of the rotors
 LINE_2 = 125  # line for the text of the plugboard
@@ -102,8 +89,6 @@ cypher_text_entry = tk.Text(root, width=30, height=10, state="disabled")
 
 
 # commands
-
-
 def randomize():
     # randomize the rotors sets
     rotor_1_type.set(rotors_options[random.randint(0, len(rotors_options) - 1)])
@@ -150,19 +135,14 @@ def cypher():
 
 
 def instantiate():
-    rotor_1_name = f"Rotor{rotor_1_type.get()}"
-    rotor_2_name = f"Rotor{rotor_2_type.get()}"
-    rotor_3_name = f"Rotor{rotor_3_type.get()}"
-    reflector_name = f"Reflector{reflector_type.get()}"
+    enigma_builder = EnigmaBuilder()
+    enigma_builder = enigma_builder.set_rotor(1, rotor_1_type.get(), rotor_1_position_dropdown.get())
+    enigma_builder = enigma_builder.set_rotor(2, rotor_2_type.get(), rotor_2_position_dropdown.get())
+    enigma_builder = enigma_builder.set_rotor(3, rotor_3_type.get(), rotor_3_position_dropdown.get())
+    enigma_builder = enigma_builder.set_reflector(reflector_type.get())
+    enigma_builder = enigma_builder.set_plugboard(plugboard_entry.get())
 
-    rotor_1 = DICT_TO_INSTANTIATE[rotor_1_name](rotor_1_position_dropdown.get())
-    rotor_2 = DICT_TO_INSTANTIATE[rotor_2_name](rotor_2_position_dropdown.get())
-    rotor_3 = DICT_TO_INSTANTIATE[rotor_3_name](rotor_3_position_dropdown.get())
-    reflector = DICT_TO_INSTANTIATE[reflector_name]()
-
-    enigma_machine = Enigma(rotor_1, rotor_2, rotor_3, reflector, plugboard_entry.get())
-
-    return enigma_machine
+    return enigma_builder.build()
 
 
 def destroy_and_instantiate():
