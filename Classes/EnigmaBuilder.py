@@ -28,6 +28,7 @@ class EnigmaBuilder:
 
     def set_rotor(self, nb_of_the_rotor, type_of_the_rotor, position_of_the_rotor):
         """
+        The one rotor at the time
         :param nb_of_the_rotor: place of the rotor in the enigma machine (1, 2 or 3)
         :param type_of_the_rotor: type of rotor I to V. This is a string 1, 2 or 3 characters long
         :param position_of_the_rotor: a 1 letter string that tells what the position of the rotor is
