@@ -3,6 +3,11 @@
 
 class Enigma:
     def __init__(self, builder):
+        """
+        Build entirely from the builder. The self.init_good attribute tells if there is no problem with the plugboard.
+          It tells if the build is good or not
+        :param builder: fully build instance from the EnigmaBuilder class
+        """
         self.rotor_1 = builder.rotor_1
         self.rotor_2 = builder.rotor_2
         self.rotor_3 = builder.rotor_3

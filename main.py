@@ -10,7 +10,7 @@ root = tk.Tk()
 
 # constants for the code
 
-enigma = []  # for now equals later on it will be the enigma machine
+enigma = []  # for now equals later on it will be the enigma machine, used to avoid using global keyword
 
 
 # Constants for the window3
@@ -124,13 +124,16 @@ def randomize():
 
 
 def cypher():
+    """
+    This function display the result of the cypher in the correct field
+    """
 
-    destroy_and_instantiate()
+    destroy_and_instantiate()  # important to have an up-to-date enigma machine
 
     text_to_cypher = plain_text_entry.get(1.0, END)
     cypher_text_entry.config(state="normal")
     cypher_text_entry.delete(1.0, END)
-    cypher_text_entry.insert(1.0, enigma[0].cypher(text_to_cypher))  # enigma[0].cypher(text_to_cypher))
+    cypher_text_entry.insert(1.0, enigma[0].cypher(text_to_cypher))
     cypher_text_entry.config(state="disabled")
 
 
@@ -146,21 +149,29 @@ def instantiate():
 
 
 def destroy_and_instantiate():
-    # we destroy the instance if there is one, then we instantiate (to make sure that the correct enigma machine is
-    # used meaning the correct settings)
+    """
+    we destroy the instance if there is one, then we instantiate (to make sure that the correct enigma machine is
+    up-to-date
+    """
+
     if len(enigma) > 0:  # if there is an instance, we delete it
         del enigma[0]
 
     enigma.append(instantiate())  # we create an instance of the enigma machine and add it to the list
 
-    # if there is a problem in the plugboard
+    # if there is a problem in the plugboard we display an error message
     if not enigma[0].init_good:
         incorrect_plugboard.place(x=270, y=170)
     else:
-        incorrect_plugboard.place_forget()
+        incorrect_plugboard.place_forget()  # otherwise, we erase it
 
 
 def build_string_from_plugboard(dict_plugboard):
+    """
+    This function takes a dictionary in input and build a string that represents the plugboard
+    :param dict_plugboard: a dict were the keys and the values are 1 letters strings
+    :return: result: a string that represent the dictionary in input
+    """
     result = ""
     for key, value in dict_plugboard.items():
         result += f"{key}{value} ".upper()
@@ -169,6 +180,10 @@ def build_string_from_plugboard(dict_plugboard):
 
 
 def load():
+    """
+    This function loads an enigma machine. Important: the EnigmaBuilder is not called because this function only changes
+     the fields in the graphical interface and does NOT instantiate an Enigma machine
+    """
     filename = filedialog.askopenfilename(initialdir="../", title="Open an enigma file",
                                           filetypes=(("enigma file", "*.enigma"), ))
 
@@ -197,6 +212,9 @@ def load():
 
 
 def save():
+    """
+    This function instantiate an enigma machine (from the fields in the graphical interface) and then saves it in a file
+    """
     destroy_and_instantiate()
     file_to_save = filedialog.asksaveasfile(initialdir="../", mode='wb', defaultextension=".enigma",
                                             filetypes=(("enigma file", "*.enigma"),))

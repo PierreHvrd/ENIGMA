@@ -9,6 +9,11 @@ class Reflector(ABC):
         self.type = ""
 
     def cypher(self, letter):
+        """
+        This method simply returns the letter that is connected to the 'letter' parameter in the reflector
+        :param letter: 1 letter long string
+        :return: 1 letter long string
+        """
         for key, value in self.reflection.items():
             if letter == key:
                 return value

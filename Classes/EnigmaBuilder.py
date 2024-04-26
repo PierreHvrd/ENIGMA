@@ -12,18 +12,29 @@ from .Enigma_Class import Enigma
 
 class EnigmaBuilder:
     def __init__(self):
+        """
+        Object that help build the Enigma simulation. This class makes the interface between the graphical interface
+        and the Enigma class. The data that it received from the graphical interface needs to be processed before
+        creating the enigma instance
+        """
         self.rotor_1 = None
         self.rotor_2 = None
         self.rotor_3 = None
         self.reflector = None
         self.plugboard = {}
         self.dict_to_instantiate = {"RotorI": RotorI, "RotorII": RotorII, "RotorIII": RotorIII, "RotorIV": RotorIV,
-                                    "RotorV": RotorV,
-                                    "B": ReflectorB, "C": ReflectorC}
+                                    "RotorV": RotorV, "B": ReflectorB, "C": ReflectorC}  # avoid long if conditions
         self.build_ok = True
 
     def set_rotor(self, nb_of_the_rotor, type_of_the_rotor, position_of_the_rotor):
-        rotor_name = f"Rotor{type_of_the_rotor}"
+        """
+        :param nb_of_the_rotor: place of the rotor in the enigma machine (1, 2 or 3)
+        :param type_of_the_rotor: type of rotor I to V. This is a string 1, 2 or 3 characters long
+        :param position_of_the_rotor: a 1 letter string that tells what the position of the rotor is
+         (not the same as the ring setting !)
+        :return: the instance of the build with one more rotor built
+        """
+        rotor_name = f"Rotor{type_of_the_rotor}"  # important to give correct type of rotor
         if nb_of_the_rotor == 1:
             self.rotor_1 = self.dict_to_instantiate[rotor_name](position_of_the_rotor)
 
@@ -107,4 +118,8 @@ class EnigmaBuilder:
         return self
 
     def build(self):
+        """
+        Must be called last to have a full enigma machine.
+        :return: enigma instance fully working
+        """
         return Enigma(self)

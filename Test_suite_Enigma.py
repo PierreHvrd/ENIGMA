@@ -11,7 +11,11 @@ from Classes.Reflectors.ReflectorB import ReflectorB
 
 
 class TestEnigma(unittest.TestCase):
+    # all the expected results from the tests come from online tools (they were double-checked)
     def setUp(self):
+        """
+        Set up all the attributes for the tests (both individuals components and a full enigma machine)
+        """
         # rotors for individual tests
         self.rotor_I_E = RotorI("E")
         self.rotor_II_I = RotorII("I")
@@ -34,6 +38,10 @@ class TestEnigma(unittest.TestCase):
         self.text = "ours is the Earth and everything that’s in it, And—which is more—you’ll be a Man, my son!"
 
     def test_rotors(self):
+        """
+        Tests the rotors individually but this method does not make them rotate like they would do in the enigma
+        machine
+        """
         self.assertEqual(self.rotor_I_E.cypher("K"), "U")
         self.assertEqual(self.rotor_II_I.cypher("M"), "H")
         self.assertEqual(self.rotor_III_K.cypher("J"), "Q")
