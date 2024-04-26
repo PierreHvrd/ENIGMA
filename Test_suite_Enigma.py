@@ -1,105 +1,54 @@
 # this is the test suite for the ENIGMA project
 
-from Enigma_Class import *
-from ReflectorB import ReflectorB
-from ReflectorC import ReflectorC
-from random import randint
+import unittest
+from EnigmaBuilder import EnigmaBuilder
 from RotorI import RotorI
 from RotorII import RotorII
 from RotorIII import RotorIII
 from RotorIV import RotorIV
 from RotorV import RotorV
-
-rotor_1 = RotorIII("N")
-rotor_2 = RotorI("K")
-rotor_3 = RotorV("M")
-rotor_4 = RotorIV("O")
-rotor_5 = RotorV("Q")
-reflectorB = ReflectorB()  # strategy
-reflectorC = ReflectorC()
-enigma = Enigma(rotor_1, rotor_2, rotor_3, reflectorC, "")
+from ReflectorB import ReflectorB
 
 
-"""
-# just test that the rotor rotates correctly
-rotor_1_bis = RotorI("Z", "A")
-text = ""
-for i in range(7):
-    rotor_1_bis.rotate()
-    text += rotor_1_bis.cypher("A")
+class TestEnigma(unittest.TestCase):
+    def setUp(self):
+        # rotors for individual tests
+        self.rotor_I_E = RotorI("E")
+        self.rotor_II_I = RotorII("I")
+        self.rotor_III_T = RotorIII("T")
+        self.rotor_III_K = RotorIII("K")
+        self.rotor_IV_S = RotorIV("S")
+        self.rotor_V_C = RotorV("C")
 
-assert text == "EJKCHBX"
+        # reflector for individual tests
+        self.reflector_B = ReflectorB()
 
-rotor_2_bis = RotorII("Z", "A")
-text = ""
-for i in range(7):
-    rotor_2_bis.rotate()
-    text += rotor_2_bis.cypher("A")
+        # enigma machine to test the whole machine
+        self.enigma_builder = EnigmaBuilder()
+        self.enigma_builder = self.enigma_builder.set_rotor(1, "I", "Z")
+        self.enigma_builder = self.enigma_builder.set_rotor(2, "IV", "R")
+        self.enigma_builder = self.enigma_builder.set_rotor(3, "III", "T")
+        self.enigma_builder = self.enigma_builder.set_reflector("C")
+        self.enigma_builder = self.enigma_builder.set_plugboard("TI GV FR UC MH QY SW JP BL ZO")
+        self.enigma = self.enigma_builder.build()
+        self.text = "ours is the Earth and everything that’s in it, And—which is more—you’ll be a Man, my son!"
 
-assert text == "AIBHODL"
+    def test_rotors(self):
+        self.assertEqual(self.rotor_I_E.cypher("K"), "U")
+        self.assertEqual(self.rotor_II_I.cypher("M"), "H")
+        self.assertEqual(self.rotor_III_K.cypher("J"), "Q")
+        self.assertEqual(self.rotor_IV_S.cypher("D"), "L")
+        self.assertEqual(self.rotor_V_C.cypher("S"), "O")
 
+    def test_reflector(self):
+        self.assertEqual(self.reflector_B.cypher("M"), "O")
+        self.assertEqual(self.reflector_B.cypher("E"), "Q")
+        self.assertEqual(self.reflector_B.cypher("N"), "K")
 
-enigma_2 = Enigma(rotor_5, rotor_3, rotor_1, "")
-print(enigma_2 == enigma)
-
-text_encrypted = enigma.cypher("OSKQH SHAWU SOAMA GVBIW OWBOM ENCBN HHEUE WQQBW VGSTN CABBW MOARS CLQPH V")
-# text_encrypted_2 = enigma_2.cypher("OSKQH SHAWU SOAMA GVBIW OWBOM ENCBN HHEUE WQQBW VGSTN CABBW MOARS CLQPH V")
-print(text_encrypted)
-assert text_encrypted == "MQLEI IKFYA TQLSO BJJHM IPZRU SWOSK ZVFOR PUBQH QALZI SJRVD NHTUD HUJAQ L"
-# assert text_encrypted == text_encrypted_2
-
-
-def generate_test():
-
-    for i in range(1, 4):
-        print(f"Rotor n°{i}: {randint(1, 5)}")
-        print(f"Position: {chr(randint(65, 90))}\n")
-
-    reflector_B_or_C = randint(1, 2)
-    if reflector_B_or_C == 1:
-        print("Reflector : B")
-
-    else:
-        print("Reflector : C")
-
-    text = ""
-    for i in range(1, randint(20, 100)):
-        text += chr(randint(65, 90))
-
-        if i % 5 == 0:
-            text += " "
-
-    print(text)
+    def test_all_enigma_machine(self):
+        self.assertEqual(self.enigma.cypher(self.text), "KHMEG QYWYD SZCJU JZDRI OPVBS XRLRW NZQLC KODYO EZZMB TJYSX"
+                                                        " SKARI FHBZM GHPFH L")  # result verified by multiples online
+        # emulators
 
 
-# generate_test()
-
-enigma_instance_1 = Enigma()
-enigma_instance_2 = Enigma()
-
-singleton_instance_1.set_value(42)
-print(singleton_instance_2.get_value())
-
-
-singleton_instance_2.set_value(123)
-print(singleton_instance_1.get_value())
-
-
-singleton_instance_1.set_value(1, firstname="Rick", lastname="Sanchez", age=70)
-print(singleton_instance_1.get_param_value("firstname"))
-print(singleton_instance_2.get_param_value("lastname"))
-print(singleton_instance_1 is singleton_instance_2)
-"""
-
-
-# 1) delete properly the singleton -> create a very simple simulation of enigma machine DONE
-# 2) check that Combobox always give something in the list of values. DONE
-# 3) create a destroy-and-instantiate function. DONE
-# 4) handle plugboard incorrect entry. DONE
-# 5) file system (first the save button and then the load button)
-# 6) 2 design patters
-# 7) Unitest
-
-
-
-
+unittest.main()
